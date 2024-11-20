@@ -8,10 +8,13 @@ const AppContextProvider = (props) =>{
 
 
     const [user, setUser] = useState(null);
+    const [showLogin, setShowLogin] = useState(false)
+
+
   const navigate = useNavigate();
 
     const value = {
-     user, setUser, navigate
+     user, setUser, navigate, showLogin, setShowLogin
     }
 
     return ( 
