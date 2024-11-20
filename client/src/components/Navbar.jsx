@@ -4,7 +4,7 @@ import { AppContext } from "../context/AppContext";
 
 const Navbar = () => {
   
-    const {user, navigate, setShowLogin} = useContext(AppContext)
+    const {user, navigate, setShowLogin,credit,logout} = useContext(AppContext)
 
   return (
     <div className="flex justify-between items-center py-4">
@@ -15,9 +15,9 @@ const Navbar = () => {
           <div className="flex items-center gap-2 sm:gap-3">
             <button onClick={()=>navigate("/buy")} className="flex items-center gap-2 bg-emerald-100 px-4 sm:px-6 py-1.5 sm:py-3 rounded-full hover:scale-105 transition-all duration-700">
               <img className="w-5" src={assets.credit_star} alt="" />
-              <p className="text-xs sm:text-sm font-medium text-gray-600">Credit Left: 5</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600">Credit Left : {credit}</p>
             </button>
-            <p className="text-gray-600 pl-4 max-sm:hidden">Hi, Judhistir</p>
+            <p className="text-gray-600 pl-4 max-sm:hidden">Hi, {user.name}</p>
 
             <div className="relative group">
               <img
@@ -27,7 +27,7 @@ const Navbar = () => {
               />
               <div className="hidden absolute group-hover:block top-0 right-0 z-10 text-black rounded pt-12">
                 <ul className="list-none m-0 p-2 bg-white rounded-md border text-sm">
-                  <li className="px-2 py-1 cursor-pointer pr-10">Logout</li>
+                  <li onClick={logout} className="px-2 py-1 cursor-pointer pr-10">Logout</li>
                 </ul>
               </div>
             </div>
