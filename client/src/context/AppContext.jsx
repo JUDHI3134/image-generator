@@ -31,6 +31,26 @@ const AppContextProvider = (props) =>{
       }
     }
 
+    //generate token
+    const generateImage = async (prompt) =>{
+        try {
+          const {data} = await axios.post(backendUrl+"/api/image/generate-image",{prompt},{headers:{token}})
+          if(data.success){
+            loadCreditsData();
+            return data.resultImage
+          }else{
+            toast.error(data.message)
+            loadCreditsData();
+            if(data.creditBalance === 0){
+              navigate("/buy")
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        toast.error(error.message)
+        }
+    }
+
     const logout = () =>{
       localStorage.removeItem('token')
       setToken('')
@@ -46,7 +66,7 @@ const AppContextProvider = (props) =>{
     const value = {
      user, setUser, navigate, showLogin, setShowLogin,
      backendUrl, credit,setCredit, token, setToken,
-     loadCreditsData,logout
+     loadCreditsData,logout,generateImage
     }
 
     return ( 
