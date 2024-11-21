@@ -102,17 +102,17 @@ const paymentRazorpay = async (req,res) =>{
        let credits, plan, amount, date
 
        switch (planId) {
-        case Basic:
+        case 'Basic':
             plan =  'Basic'
             credits =  100
             amount = 10
             break;
-        case Advanced:
+        case 'Advanced':
             plan =  'Advanced'
             credits =  500
             amount = 50
             break;
-        case Business:
+        case 'Business':
             plan =  'Business'
             credits =  5000
             amount = 250
@@ -150,4 +150,33 @@ const paymentRazorpay = async (req,res) =>{
     }
 }
 
-export {registerUser, loginUser, userCredits,paymentRazorpay}
+//verify payment
+const verifyRazorpay = async (req,res) =>{
+    try {
+      const {razorpay_order_id} = req.body
+      
+      const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
+
+      if (orderInfo.status === "paid") {
+        const transationData = await transationModel.findById(orderInfo.receipt)
+        if(transationData.payment){
+            return res.json({success: false, message: "Payment Failed"})
+        }
+
+        const userData = await userModel.findById(transationData.userId)
+        const creditBalance = userData.creditBalance + transationData.credits
+        await userModel.findByIdAndUpdate(userData._id, {creditBalance})
+        await transationModel.findByIdAndUpdate(transationData._id,{payment: true})
+        res.json({success: true, message: "Credits Added"})
+
+      }else{
+        res.json({success: false, message: "Payment Failed "})
+      }
+      
+    } catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message})
+    }
+}
+
+export {registerUser, loginUser, userCredits,paymentRazorpay,verifyRazorpay}
